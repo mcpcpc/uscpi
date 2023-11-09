@@ -1,0 +1,33 @@
+[project]
+name = "uscpi"
+version = "0.0.1"
+description = "An asynchronous SCPI instrumentation library."
+keywords = ["instrumentation", "SCPI", "asynchronous"]
+authors = [
+    {name = "Michael Czigler", email = "michaelczigler@icloud.com"},
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+]
+
+[project.urls]
+homepage = "https://github.com/mcpcpc/uscpi"
+repository = "https://github.com/mcpcpc/uscpi"
+
+[project.optional-dependencies]
+dev = ["coverage", "black"]
+
+[tool.setuptools]
+packages = ["uscpi"]
+
+[tool.coverage.run]
+branch = true
+source = ["uscpi"]
