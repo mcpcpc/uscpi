@@ -4,13 +4,13 @@ An asynchronous SCPI instrumentation library.
 
 ## Installation
 
-Installing the latest release from [PyPI](pypi.org).
+Installing the latest release from [PyPI](https://pypi.org).
 
 ```console
 pip install -U uscpi
 ```
 
-Installing from the latest source using [git](git-scm.com).
+Installing from the latest source using [git](https://git-scm.com).
 
 ```console
 git clone http://github.com/mcpcpc/uscpi
