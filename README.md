@@ -1,16 +1,16 @@
-# uscpi
+# &mu;SCPI
 
 An asynchronous SCPI instrumentation library.
 
 ## Installation
 
-Installing the latest release from PyPI.
+Installing the latest release from [PyPI](pypi.org).
 
 ```console
 pip install -U uscpi
 ```
 
-Installing from the latest source using `git`.
+Installing from the latest source using [git](git-scm.com).
 
 ```console
 git clone http://github.com/mcpcpc/uscpi
