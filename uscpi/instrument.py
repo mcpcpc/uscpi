@@ -22,7 +22,7 @@ class Instrument:
         if isinstance(value, ClientBase):
             self._client = value
             return
-        raise TypeError("Expected a ClientBase object") 
+        raise TypeError("Expected a ClientBase object")
 
     def cls(self) -> None:
         """Clear Status Command.
