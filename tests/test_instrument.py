@@ -10,7 +10,7 @@ from unittest.mock import patch
 from uscpi.instrument import Instrument
 
 
-@patch("uscpi.instrument.ClientBase")
+@patch("uscpi.client.ClientBase", autospec=True)
 class TestInstrument(IsolatedAsyncioTestCase):
     async def test_cls(self, mock_client_base):
         mock_client_base.write = AsyncMock()

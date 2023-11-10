@@ -103,7 +103,7 @@ class TCP(ClientBase):
     async def readline(self) -> bytes:
         """
         Read and return one line, where "line" is a sequence
-        of bytes ending with `\n`.
+        of bytes ending with \\n.
         """
 
         return await self.reader.readline()

@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from dataclasses import dataclass
-
 from uscpi.client import ClientBase
 
 
-@dataclass
 class Instrument:
     """
     Instrument representation. Implements common commands
     associated with IEEE-488.2.
     """
 
-    client: ClientBase
+    def __init__(self, client: ClientBase) -> None:
+        self.client = client
+
+    @property
+    def client(self) -> ClientBase:
+        return self._client
+
+    @client.setter
+    def client(self, value: ClientBase) -> None:
+        if isinstance(value, ClientBase):
+            self._client = value
+            return
+        raise TypeError("Expected a ClientBase object") 
 
     def cls(self) -> None:
         """Clear Status Command.
