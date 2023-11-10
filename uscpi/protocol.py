@@ -7,6 +7,7 @@ from asyncio import Lock
 from asyncio import open_connection
 from asyncio import StreamReader
 from asyncio import StreamWriter
+from asyncio import wait_for
 from functools import wraps
 
 
@@ -52,9 +53,15 @@ class TCP(ProtocolBase):
     reader: StreamReader = None
     writer: StreamWriter = None
 
-    def __init__(self, host: str, port: int):
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        timeout: int | float | None = None,
+    ):
         self.host = str(host)
         self.port = int(port)
+        self.timeout = timeout
 
     def is_eof(self) -> bool:
         """
@@ -92,6 +99,8 @@ class TCP(ProtocolBase):
             raise Exception("Already connected.")
         await self.close()
         coroutine = open_connection(self.host, self.port)
+        if isinstance(self.timeout, (int, float)):
+            coroutine = wait_for(coroutine, self.timeout)
         self.reader, self.writer = await coroutine
 
     @connection

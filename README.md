@@ -2,7 +2,9 @@
 
 An asynchronous SCPI instrumentation library.
 
-## Installation
+## Install
+
+### PyPI
 
 Installing the latest release from [PyPI](https://pypi.org).
 
@@ -10,12 +12,26 @@ Installing the latest release from [PyPI](https://pypi.org).
 pip install -U uscpi
 ```
 
-Installing from the latest source using [git](https://git-scm.com).
+### Repository
+
+When using [git](https://git-scm.com), clone the repository and change your present working directory.
 
 ```console
 git clone http://github.com/mcpcpc/uscpi
 cd uscpi/
-pip install .
+```
+
+Create and activate a virtual environment.
+
+```console
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install &mu;SCPI to the virtual environment.
+
+```console
+pip install -e .
 ```
 
 ## Usage
@@ -40,7 +56,7 @@ if __name__ == "__main__":
 
 ## Features
 
-The `uscpi` is fairly lightweight and leaves a majority of instrument function commands to be implemented by the user. Nonetheless, the following IEEE-488.2 commands have been implemented:
+&mu;SCPI is fairly lightweight and leaves a majority of instrument function commands to be implemented by the user. Nonetheless, the following IEEE-488.2 commands have been implemented:
 
 - Clear Status Command
 - Event Status Enable Command and Query
