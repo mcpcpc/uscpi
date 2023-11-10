@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from asyncio import TimeoutError
 from unittest import IsolatedAsyncioTestCase
 from unittest import main
 from unittest.mock import AsyncMock
 from unittest.mock import Mock
 from unittest.mock import patch
+from time import time
 
 from uscpi.protocol import TCP
 
 
-@patch("uscpi.protocol.open_connection")
 class TestTCP(IsolatedAsyncioTestCase):
     def setUp(self):
         self.tcp = TCP("127.0.0.1", 8080)
@@ -19,6 +20,15 @@ class TestTCP(IsolatedAsyncioTestCase):
         self.mock_writer.drain = AsyncMock()
         self.mock_writer.write = Mock()
 
+    async def test_tcp_timeout(self):
+        tcp = TCP("10.0.0.0", 8080, timeout=0.1)
+        with self.assertRaises(TimeoutError):
+            start = time()
+            await tcp.open()
+        delta = time() - start
+        self.assertAlmostEqual(delta, 0.1, places=1)
+
+    @patch("uscpi.protocol.open_connection")
     async def test_tcp_open(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         await self.tcp.open()
@@ -26,6 +36,7 @@ class TestTCP(IsolatedAsyncioTestCase):
         self.assertIsNotNone(self.tcp.reader)
         self.assertIsNotNone(self.tcp.writer)
 
+    @patch("uscpi.protocol.open_connection")
     async def test_tcp_close(self, mock_open_connection):
         self.tcp.reader = self.mock_reader
         self.tcp.writer = self.mock_writer
@@ -33,22 +44,26 @@ class TestTCP(IsolatedAsyncioTestCase):
         self.assertIsNone(self.tcp.reader)
         self.assertIsNone(self.tcp.writer)
 
+    @patch("uscpi.protocol.open_connection")
     async def test_tcp_readline(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         self.mock_reader.readline.return_value = b"test\n"
         self.assertEqual(await self.tcp.readline(), b"test\n")
 
+    @patch("uscpi.protocol.open_connection")
     async def test_tcp_readuntil(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         self.mock_reader.readuntil.return_value = b"test\n"
         self.assertEqual(await self.tcp.readuntil(b"\n"), b"test\n")
 
+    @patch("uscpi.protocol.open_connection")
     async def test_tcp_write(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         await self.tcp.write(b"test\n")
         self.mock_writer.drain.assert_awaited()
         self.mock_writer.write.assert_called_with(b"test\n")
 
+    @patch("uscpi.protocol.open_connection")
     async def test_tcp_write_readline(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         self.mock_reader.readline.return_value = b"test\n"
