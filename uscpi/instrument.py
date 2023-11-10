@@ -24,7 +24,7 @@ class Instrument:
 
         return self.protocol.write(b"*CLS\n")
 
-    def ese(self, value: int = None) -> bytes | None:
+    def ese(self, value: int | None = None) -> bytes | None:
         """Event Status Enable Command and Query.
 
         Enables bits in the enable register for the Standard
@@ -102,7 +102,7 @@ class Instrument:
 
         return self.protocol.write(b"*RST\n")
 
-    def sre(self, value: int = None) -> bytes | None:
+    def sre(self, value: int | None = None) -> bytes | None:
         """Service Request Enable Command and Query.
 
         Service Request Enable. Enables bits in the enable
