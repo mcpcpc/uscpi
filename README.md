@@ -79,6 +79,13 @@ TCP(host="127.0.0.1", port=5025, timeout=0.1)
 - Self-Test Query
 - Wait-to-Continue Command
 
+You can learn more about each of these commands by using the built-in `help` method.
+
+```pycon
+>>> from uscpi.instrument import Instrument
+>>> help(Instrument)
+```
+
 ## Credits
 
 - [sockio](https://github.com/tiagocoutinho/sockio)
