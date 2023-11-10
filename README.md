@@ -42,11 +42,11 @@ A basic example using the *asyncio* library.
 
 ```python
 from asyncio import run
-from uscpi.protocol import TCP
+from uscpi.client import TCP
 from uscpi.instrument import Instrument
 
-protocol = TCP(host="127.0.0.1", port=5025)
-instrument = Instrument(protocol=protocol)
+client = TCP(host="127.0.0.1", port=5025)
+instrument = Instrument(client=client)
 
 async def main():
     response = await instrument.idn()

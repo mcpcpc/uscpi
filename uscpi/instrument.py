@@ -3,7 +3,7 @@
 
 from dataclasses import dataclass
 
-from uscpi.protocol import ProtocolBase
+from uscpi.client import ClientBase
 
 
 @dataclass
@@ -13,7 +13,7 @@ class Instrument:
     associated with IEEE-488.2.
     """
 
-    protocol: ProtocolBase
+    client: ClientBase
 
     def cls(self) -> None:
         """Clear Status Command.
@@ -22,7 +22,7 @@ class Instrument:
         Also clears the error queue.
         """
 
-        return self.protocol.write(b"*CLS\n")
+        return self.client.write(b"*CLS\n")
 
     def ese(self, value: int | None = None) -> bytes | None:
         """Event Status Enable Command and Query.
@@ -46,8 +46,8 @@ class Instrument:
         if isinstance(value, int):
             if value not in range(256):
                 raise ValueError(value)
-            return self.protocol.write(f"*ESE {value}\n".encode())
-        return self.protocol.write_readline(b"*ESE?\n")
+            return self.client.write(f"*ESE {value}\n".encode())
+        return self.client.write_readline(b"*ESE?\n")
 
     def esr(self) -> bytes:
         """Standard Event Status Register Query.
@@ -61,7 +61,7 @@ class Instrument:
         that bit are ignored.
         """
 
-        return self.protocol.write_readline(b"*ESR?\n")
+        return self.client.write_readline(b"*ESR?\n")
 
     def idn(self) -> bytes:
         """Identification Query.
@@ -73,7 +73,7 @@ class Instrument:
             commas.
         """
 
-        return self.protocol.write_readline(b"*IDN?\n")
+        return self.client.write_readline(b"*IDN?\n")
 
     def opc(self, complete: bool = False) -> bytes | None:
         """Operation Complete Command and Query.
@@ -84,8 +84,8 @@ class Instrument:
         """
 
         if isinstance(complete, bool) and complete:
-            return self.protocol.write(b"*OPC\n")
-        return self.protocol.write_readline(b"*OPC?\n")
+            return self.client.write(b"*OPC\n")
+        return self.client.write_readline(b"*OPC?\n")
 
     def rst(self) -> None:
         """Reset Command.
@@ -100,7 +100,7 @@ class Instrument:
         turns them on (CALC:TRAN:HIST:STAT ON).
         """
 
-        return self.protocol.write(b"*RST\n")
+        return self.client.write(b"*RST\n")
 
     def sre(self, value: int | None = None) -> bytes | None:
         """Service Request Enable Command and Query.
@@ -123,8 +123,8 @@ class Instrument:
         if isinstance(value, int):
             if value not in range(256):
                 raise ValueError(value)
-            return self.protocol.write(f"*SRE {value}\n".encode())
-        return self.protocol.write_readline(b"*SRE?\n")
+            return self.client.write(f"*SRE {value}\n".encode())
+        return self.client.write_readline(b"*SRE?\n")
 
     def stb(self) -> bytes:
         """Read Status Byte Query.
@@ -143,7 +143,7 @@ class Instrument:
             The status byte and Master Summary Status bit.
         """
 
-        return self.protocol.write_readline(b"*STB?\n")
+        return self.client.write_readline(b"*STB?\n")
 
     def trg(self) -> None:
         """Trigger Command.
@@ -152,7 +152,7 @@ class Instrument:
         selected.
         """
 
-        return self.protocol.write("*TRG\n")
+        return self.client.write("*TRG\n")
 
     def tst(self) -> bytes:
         """Self-Test Query.
@@ -168,7 +168,7 @@ class Instrument:
             self-test completed without errors detected.
         """
 
-        return self.protocol.write_readline(b"*TST?\n")
+        return self.client.write_readline(b"*TST?\n")
 
     def wai(self) -> None:
         """Wait-to-Continue Command.
@@ -179,4 +179,4 @@ class Instrument:
         interface.
         """
 
-        return self.protocol.write(b"*WAI\n")
+        return self.client.write(b"*WAI\n")

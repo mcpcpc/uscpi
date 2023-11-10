@@ -13,9 +13,9 @@ from functools import wraps
 
 
 @dataclass
-class ProtocolBase(ABC):
+class ClientBase(ABC):
     """
-    Protocol base representation.
+    Client base representation.
     """
 
     host: str
@@ -31,9 +31,9 @@ class ProtocolBase(ABC):
 
 
 @dataclass
-class TCP(ProtocolBase):
+class TCP(ClientBase):
     """
-    TCP protocol representation.
+    TCP client representation.
     """
 
     timeout: int | float | None = None
