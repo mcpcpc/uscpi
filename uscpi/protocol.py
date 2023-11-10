@@ -12,24 +12,6 @@ from dataclasses import dataclass
 from functools import wraps
 
 
-def connection(func):
-    """
-    Attempt to establish/re-establish connection.
-    """
-
-    @wraps(func)
-    async def wrapper(self, *args, **kwargs):
-        if not isinstance(self.lock, Lock):
-            self.lock = Lock()
-        async with self.lock:
-            if not self.is_connected():
-                await self.open()
-        coroutine = func(self, *args, **kwargs)
-        return await coroutine
-
-    return wrapper
-
-
 @dataclass
 class ProtocolBase(ABC):
     """
@@ -58,6 +40,24 @@ class TCP(ProtocolBase):
     lock: Lock | None = None
     reader: StreamReader | None = None
     writer: StreamWriter | None = None
+
+    @staticmethod
+    def connection(func):
+        """
+        Attempt to establish/re-establish connection.
+        """
+
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            if not isinstance(self.lock, Lock):
+                self.lock = Lock()
+            async with self.lock:
+                if not self.is_connected():
+                    await self.open()
+            coroutine = func(self, *args, **kwargs)
+            return await coroutine
+
+        return wrapper
 
     def is_eof(self) -> bool:
         """
