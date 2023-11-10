@@ -1,14 +1,18 @@
 [project]
 name = "uscpi"
-version = "0.0.1"
+version = "0.1.0"
 description = "An asynchronous SCPI instrumentation library."
-keywords = ["instrumentation", "SCPI", "asynchronous"]
-authors = [
-    {name = "Michael Czigler", email = "michaelczigler@icloud.com"},
-]
 readme = "README.md"
 requires-python = ">=3.11"
 license = {file = "LICENSE"}
+keywords = [
+    "instrumentation",
+    "SCPI",
+    "asynchronous",
+]
+authors = [
+    {name = "Michael Czigler", email = "michaelczigler@icloud.com"},
+]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: BSD License",

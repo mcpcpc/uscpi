@@ -7,33 +7,19 @@ from asyncio import Lock
 from asyncio import open_connection
 from asyncio import StreamReader
 from asyncio import StreamWriter
+from asyncio import wait_for
+from dataclasses import dataclass
 from functools import wraps
 
 
-def connection(func):
+@dataclass
+class ClientBase(ABC):
     """
-    Attempt to establish/re-establish connection.
-    """
-
-    @wraps(func)
-    async def wrapper(self, *args, **kwargs):
-        if not isinstance(self.lock, Lock):
-            self.lock = Lock()
-        async with self.lock:
-            if not self.is_connected():
-                await self.open()
-        coroutine = func(self, *args, **kwargs)
-        return await coroutine
-
-    return wrapper
-
-
-class ProtocolBase(ABC):
-    """
-    Protocol base representation.
+    Client base representation.
     """
 
-    lock: Lock = None
+    host: str
+    port: int
 
     @abstractmethod
     async def close(self, *args, **kwargs) -> None:
@@ -44,17 +30,34 @@ class ProtocolBase(ABC):
         ...
 
 
-class TCP(ProtocolBase):
+@dataclass
+class TCP(ClientBase):
     """
-    TCP protocol representation.
+    TCP client representation.
     """
 
-    reader: StreamReader = None
-    writer: StreamWriter = None
+    timeout: int | float | None = None
+    lock: Lock | None = None
+    reader: StreamReader | None = None
+    writer: StreamWriter | None = None
 
-    def __init__(self, host: str, port: int):
-        self.host = str(host)
-        self.port = int(port)
+    @staticmethod
+    def connection(func):
+        """
+        Attempt to establish/re-establish connection.
+        """
+
+        @wraps(func)
+        async def wrapper(self, *args, **kwargs):
+            if not isinstance(self.lock, Lock):
+                self.lock = Lock()
+            async with self.lock:
+                if not self.is_connected():
+                    await self.open()
+            coroutine = func(self, *args, **kwargs)
+            return await coroutine
+
+        return wrapper
 
     def is_eof(self) -> bool:
         """
@@ -92,6 +95,8 @@ class TCP(ProtocolBase):
             raise Exception("Already connected.")
         await self.close()
         coroutine = open_connection(self.host, self.port)
+        if isinstance(self.timeout, (int, float)):
+            coroutine = wait_for(coroutine, self.timeout)
         self.reader, self.writer = await coroutine
 
     @connection

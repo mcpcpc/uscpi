@@ -2,7 +2,9 @@
 
 An asynchronous SCPI instrumentation library.
 
-## Installation
+## Install
+
+### PyPI
 
 Installing the latest release from [PyPI](https://pypi.org).
 
@@ -10,25 +12,41 @@ Installing the latest release from [PyPI](https://pypi.org).
 pip install -U uscpi
 ```
 
-Installing from the latest source using [git](https://git-scm.com).
+### Repository
+
+When using [git](https://git-scm.com), clone the repository and change your present working directory.
 
 ```console
 git clone http://github.com/mcpcpc/uscpi
 cd uscpi/
-pip install .
+```
+
+Create and activate a virtual environment.
+
+```console
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Install &mu;SCPI to the virtual environment.
+
+```console
+pip install -e .
 ```
 
 ## Usage
+
+### Asynchronous
 
 A basic example using the *asyncio* library.
 
 ```python
 from asyncio import run
-from uscpi.protocol import TCP
+from uscpi.client import TCP
 from uscpi.instrument import Instrument
 
-protocol = TCP(host="127.0.0.1", port=5025)
-instrument = Instrument(protocol=protocol)
+client = TCP(host="127.0.0.1", port=5025)
+instrument = Instrument(client=client)
 
 async def main():
     response = await instrument.idn()
@@ -38,9 +56,17 @@ if __name__ == "__main__":
      run(main())
 ```
 
+### Connection Timeout
+
+By default, &mu;SCPI will wait indefinitely for a connection to be established. If the `timeout` property is defined, an *asyncio.TimeoutError* will be raised after the specified connection time period (in seconds) is exceeded.
+
+```python
+TCP(host="127.0.0.1", port=5025, timeout=0.1)
+```
+
 ## Features
 
-The `uscpi` is fairly lightweight and leaves a majority of instrument function commands to be implemented by the user. Nonetheless, the following IEEE-488.2 commands have been implemented:
+&mu;SCPI is fairly lightweight and leaves a majority of instrument function commands to be implemented by the user. Nonetheless, the following IEEE-488.2 commands have been implemented:
 
 - Clear Status Command
 - Event Status Enable Command and Query
@@ -52,6 +78,13 @@ The `uscpi` is fairly lightweight and leaves a majority of instrument function c
 - Trigger Command
 - Self-Test Query
 - Wait-to-Continue Command
+
+You can learn more about each of these commands by using the built-in `help` method.
+
+```pycon
+>>> from uscpi.instrument import Instrument
+>>> help(Instrument)
+```
 
 ## Credits
 
