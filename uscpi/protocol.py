@@ -8,6 +8,7 @@ from asyncio import open_connection
 from asyncio import StreamReader
 from asyncio import StreamWriter
 from asyncio import wait_for
+from dataclasses import dataclass
 from functools import wraps
 
 
@@ -29,12 +30,14 @@ def connection(func):
     return wrapper
 
 
+@dataclass
 class ProtocolBase(ABC):
     """
     Protocol base representation.
     """
 
-    lock: Lock = None
+    host: str
+    port: int
 
     @abstractmethod
     async def close(self, *args, **kwargs) -> None:
@@ -45,23 +48,16 @@ class ProtocolBase(ABC):
         ...
 
 
+@dataclass
 class TCP(ProtocolBase):
     """
     TCP protocol representation.
     """
 
-    reader: StreamReader = None
-    writer: StreamWriter = None
-
-    def __init__(
-        self,
-        host: str,
-        port: int,
-        timeout: int | float | None = None,
-    ):
-        self.host = str(host)
-        self.port = int(port)
-        self.timeout = timeout
+    timeout: int | float | None = None
+    lock: Lock | None = None
+    reader: StreamReader | None = None
+    writer: StreamWriter | None = None
 
     def is_eof(self) -> bool:
         """
