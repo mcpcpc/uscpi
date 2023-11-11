@@ -15,10 +15,17 @@ from functools import wraps
 
 async def open_connection(host: str = None, port: int = None, **kwargs) -> tuple:
     """Create and return a StreamReader/StreamWriter pair.
-    
+
     This is basically the CPython helper method
     implementation but allows us to access the protocol
     class.
+
+    Args:
+        host: A string for the target hostname or IP.
+        port: An integer for the target host port.
+
+    Returns:
+        Tuple of StreamReader and StreamWriter objects.
     """
 
     loop = get_running_loop()
