@@ -3,13 +3,30 @@
 
 from abc import ABC
 from abc import abstractmethod
+from asyncio import get_running_loop
 from asyncio import Lock
-from asyncio import open_connection
 from asyncio import StreamReader
+from asyncio import StreamReaderProtocol
 from asyncio import StreamWriter
 from asyncio import wait_for
 from dataclasses import dataclass
 from functools import wraps
+
+
+async def open_connection(host: str = None, port: int = None, **kwargs) -> tuple:
+    """Create and return a StreamReader/StreamWriter pair.
+    
+    This is basically the CPython helper method
+    implementation but allows us to access the protocol
+    class.
+    """
+
+    loop = get_running_loop()
+    reader = StreamReader(limit=2**16, loop=loop)
+    protocol = StreamReaderProtocol(reader, loop=loop)
+    transport, _ = await loop.create_connection(lambda: protocol, host, port, **kwargs)
+    writer = StreamWriter(transport, protocol, reader, loop)
+    return reader, writer
 
 
 @dataclass
