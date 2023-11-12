@@ -5,7 +5,20 @@ from asyncio import iscoroutine
 from asyncio import StreamReaderProtocol
 
 
-class CallbackProtocol(StreamReaderProtocol):
+class CallbackHandler:
+    """Callback handler.
+    
+    User-implemented functions instantiated after the
+    respective StreamReaderProtocol helper mothod.
+    """
+
+    connection_made_callback = None
+    connection_lost_callback = None
+    data_received_callback = None
+    eof_received_callback = None
+
+
+class CallbackProtocol(StreamReaderProtocol, CallbackHandler):
     """Callback protocol.
 
     A wrapper for StreamReaderProtocol that allows users to
