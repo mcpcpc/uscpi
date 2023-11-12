@@ -16,9 +16,8 @@ from functools import wraps
 async def open_connection(host: str = None, port: int = None, **kwargs) -> tuple:
     """Create and return a StreamReader/StreamWriter pair.
 
-    This is basically the CPython helper method
-    implementation but allows us to access the protocol
-    class.
+    Identical to the CPython helper method implementation
+    but with optional callback arguments.
 
     Args:
         host: A string for the target hostname or IP.
