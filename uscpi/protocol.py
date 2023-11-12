@@ -6,7 +6,7 @@ from asyncio import StreamReaderProtocol
 
 
 class CallbackProtocol(StreamReaderProtocol):
-    """Callback protocol
+    """Callback protocol.
 
     A wrapper for StreamReaderProtocol that allows users to
     implement their own custom callback functions. Each user

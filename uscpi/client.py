@@ -13,8 +13,10 @@ from dataclasses import dataclass
 from functools import wraps
 
 
-async def open_connection(host: str = None, port: int = None, **kwargs) -> tuple:
-    """Create and return a StreamReader/StreamWriter pair.
+async def open_connection(
+    host: str = None, port: int = None, limit: int = 2**16, **kwargs
+) -> tuple:
+    """Open connection.
 
     Identical to the CPython helper method implementation
     but with optional callback arguments.
@@ -28,7 +30,7 @@ async def open_connection(host: str = None, port: int = None, **kwargs) -> tuple
     """
 
     loop = get_running_loop()
-    reader = StreamReader(limit=2**16, loop=loop)
+    reader = StreamReader(limit=limit, loop=loop)
     protocol = StreamReaderProtocol(reader, loop=loop)
     transport, _ = await loop.create_connection(lambda: protocol, host, port, **kwargs)
     writer = StreamWriter(transport, protocol, reader, loop)
