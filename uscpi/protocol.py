@@ -7,7 +7,7 @@ from asyncio import StreamReaderProtocol
 
 class CallbackHandler:
     """Callback handler.
-    
+
     User-implemented functions instantiated after the
     respective StreamReaderProtocol helper mothod.
     """
