@@ -20,13 +20,6 @@ async def open_connection(
 
     Identical to the CPython helper method implementation
     but with optional callback arguments.
-
-    Args:
-        host: A string for the target hostname or IP.
-        port: An integer for the target host port.
-
-    Returns:
-        Tuple of StreamReader and StreamWriter objects.
     """
 
     loop = get_running_loop()

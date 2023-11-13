@@ -43,13 +43,6 @@ class Instrument:
         register will be reported to the Status Byte
         register group. You can write to or read from an
         enable register.
-
-        Args:
-            value: An integer in the range of 0 through 255.
-
-        Returns:
-             If value is not specified, returns the content
-             of the Standard Event Status Enable register.
         """
 
         if isinstance(value, int):
@@ -76,10 +69,6 @@ class Instrument:
         """Identification Query.
 
         Returns the instrument’s identification string.
-
-        Returns:
-            A string organized into four fields separated by
-            commas.
         """
 
         return self.client.write_readline(b"*IDN?\n")
@@ -121,12 +110,8 @@ class Instrument:
         register group. You can write to or read from an
         enable register.
 
-        Args:
-            value: An integer in the range of 0 through 255.
-
-        Returns:
-             If value is not specified, returns the content
-             of the Service Request Enable register.
+        If a value is not specified, returns the content
+        of the Service Request Enable register.
         """
 
         if isinstance(value, int):
@@ -171,10 +156,9 @@ class Instrument:
         self-test is more comprehensive than the *TST?
         self-test.
 
-        Returns:
-            An integer value in the range of -32767 and
-            32767. A response of 0 indicates that the
-            self-test completed without errors detected.
+        Returns an integer value in the range of -32767
+        and 32767. A response of 0 indicates that the
+        self-test completed without errors detected.
         """
 
         return self.client.write_readline(b"*TST?\n")
