@@ -132,9 +132,6 @@ class Instrument:
         of the instrument. Condition register bits are
         updated in real time; they are neither latched nor
         buffered.
-
-        Returns:
-            The status byte and Master Summary Status bit.
         """
 
         return self.client.write_readline(b"*STB?\n")
