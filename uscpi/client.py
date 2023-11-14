@@ -9,7 +9,6 @@ from asyncio import StreamReader
 from asyncio import StreamReaderProtocol
 from asyncio import StreamWriter
 from asyncio import wait_for
-from dataclasses import dataclass
 from functools import wraps
 
 
@@ -30,14 +29,10 @@ async def open_connection(
     return reader, writer
 
 
-@dataclass
 class ClientBase(ABC):
     """
     Client base representation.
     """
-
-    host: str
-    port: int
 
     @abstractmethod
     async def close(self, *args, **kwargs) -> None:
@@ -48,16 +43,21 @@ class ClientBase(ABC):
         ...
 
 
-@dataclass
 class TCP(ClientBase):
     """
     TCP client representation.
     """
 
-    timeout: int | float | None = None
     lock: Lock | None = None
     reader: StreamReader | None = None
     writer: StreamWriter | None = None
+
+    def __init__(
+        self, host: str, port: int, timeout: int | float | None = None
+    ) -> None:
+        self.host = host
+        self.port = port
+        self.timeout = timeout
 
     @staticmethod
     def connection(func):
