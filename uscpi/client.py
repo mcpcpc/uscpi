@@ -78,7 +78,6 @@ class TCP(ClientBase):
         self.host = host
         self.port = port
         self.timeout = timeout
-        self.handler = handler
         self.connection_made_cb = connection_made_cb
         self.connection_lost_cb = connection_lost_cb
         self.data_received_cb = data_received_cb
