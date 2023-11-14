@@ -3,22 +3,10 @@
 
 from asyncio import iscoroutine
 from asyncio import StreamReaderProtocol
+from typing import Callable
 
 
-class CallbackHandler:
-    """Callback handler.
-
-    User-implemented functions instantiated after the
-    respective StreamReaderProtocol helper mothod.
-    """
-
-    connection_made_callback = None
-    connection_lost_callback = None
-    data_received_callback = None
-    eof_received_callback = None
-
-
-class CallbackProtocol(StreamReaderProtocol, CallbackHandler):
+class CallbackProtocol(StreamReaderProtocol):
     """Callback protocol.
 
     A wrapper for StreamReaderProtocol that allows users to
@@ -37,20 +25,20 @@ class CallbackProtocol(StreamReaderProtocol, CallbackHandler):
 
     def connection_made(self, transport):
         result = super().connection_made(transport)
-        self._exec_callback("connection_made_callback", transport)
+        self._exec_callback("connection_made_cb", transport)
         return result
 
     def connection_lost(self, exc):
         result = super().connection_lost(exc)
-        self._exec_callback("connection_lost_callback", exc)
+        self._exec_callback("connection_lost_cb", exc)
         return result
 
     def data_received(self, data):
         result = super().data_received(data)
-        self._exec_callback("data_received_callback", data)
+        self._exec_callback("data_received_cb", data)
         return result
 
     def eof_received(self):
         result = super().eof_received()
-        self._exec_callback("eof_received_callback")
+        self._exec_callback("eof_received_cb")
         return result
