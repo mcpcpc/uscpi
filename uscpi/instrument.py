@@ -1,19 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from dataclasses import dataclass
-
 from uscpi.client import ClientBase
 
 
-@dataclass
 class Instrument:
-    """
-    Instrument representation. Implements common commands
-    associated with IEEE-488.2.
+    """Instrument representation.
+
+    Implements common commands associated with IEEE-488.2.
     """
 
-    client: ClientBase
+    def __init__(self, client: ClientBase) -> None:
+        self.client = client
+
+    @property
+    def client(self) -> ClientBase:
+        return self._client
+
+    @client.setter
+    def client(self, value: ClientBase) -> None:
+        if isinstance(value, ClientBase):
+            self._client = value
+            return
+        raise TypeError("Expected a ClientBase object")
 
     def cls(self) -> None:
         """Clear Status Command.
@@ -34,13 +43,6 @@ class Instrument:
         register will be reported to the Status Byte
         register group. You can write to or read from an
         enable register.
-
-        Args:
-            value: An integer in the range of 0 through 255.
-
-        Returns:
-             If value is not specified, returns the content
-             of the Standard Event Status Enable register.
         """
 
         if isinstance(value, int):
@@ -67,10 +69,6 @@ class Instrument:
         """Identification Query.
 
         Returns the instrument’s identification string.
-
-        Returns:
-            A string organized into four fields separated by
-            commas.
         """
 
         return self.client.write_readline(b"*IDN?\n")
@@ -112,12 +110,8 @@ class Instrument:
         register group. You can write to or read from an
         enable register.
 
-        Args:
-            value: An integer in the range of 0 through 255.
-
-        Returns:
-             If value is not specified, returns the content
-             of the Service Request Enable register.
+        If a value is not specified, returns the content
+        of the Service Request Enable register.
         """
 
         if isinstance(value, int):
@@ -138,9 +132,6 @@ class Instrument:
         of the instrument. Condition register bits are
         updated in real time; they are neither latched nor
         buffered.
-
-        Returns:
-            The status byte and Master Summary Status bit.
         """
 
         return self.client.write_readline(b"*STB?\n")
@@ -162,10 +153,9 @@ class Instrument:
         self-test is more comprehensive than the *TST?
         self-test.
 
-        Returns:
-            An integer value in the range of -32767 and
-            32767. A response of 0 indicates that the
-            self-test completed without errors detected.
+        Returns an integer value in the range of -32767
+        and 32767. A response of 0 indicates that the
+        self-test completed without errors detected.
         """
 
         return self.client.write_readline(b"*TST?\n")

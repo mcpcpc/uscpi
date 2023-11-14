@@ -3,23 +3,49 @@
 
 from abc import ABC
 from abc import abstractmethod
+from asyncio import get_running_loop
 from asyncio import Lock
-from asyncio import open_connection
 from asyncio import StreamReader
 from asyncio import StreamWriter
 from asyncio import wait_for
-from dataclasses import dataclass
 from functools import wraps
+from typing import Callable
+
+from uscpi.protocol import CallbackProtocol
 
 
-@dataclass
+async def open_connection(
+    host: str,
+    port: int,
+    limit: int | float,
+    connection_made_cb: Callable,
+    connection_lost_cb: Callable,
+    data_received_cb: Callable,
+    eof_received_cb: Callable,
+    **kwargs,
+) -> tuple:
+    """Open connection.
+
+    Identical to the CPython helper method implementation
+    but with optional callback arguments.
+    """
+
+    loop = get_running_loop()
+    reader = StreamReader(limit=limit, loop=loop)
+    protocol = CallbackProtocol(reader, loop=loop)
+    protocol.connection_made_cb = connection_made_cb
+    protocol.connection_lost_cb = connection_lost_cb
+    protocol.data_received_cb = data_received_cb
+    protocol.eof_received_cb = eof_received_cb
+    transport, _ = await loop.create_connection(lambda: protocol, host, port, **kwargs)
+    writer = StreamWriter(transport, protocol, reader, loop)
+    return reader, writer
+
+
 class ClientBase(ABC):
     """
     Client base representation.
     """
-
-    host: str
-    port: int
 
     @abstractmethod
     async def close(self, *args, **kwargs) -> None:
@@ -30,16 +56,32 @@ class ClientBase(ABC):
         ...
 
 
-@dataclass
 class TCP(ClientBase):
     """
     TCP client representation.
     """
 
-    timeout: int | float | None = None
     lock: Lock | None = None
     reader: StreamReader | None = None
     writer: StreamWriter | None = None
+
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        timeout: int | float = 2**16,
+        connection_made_cb: Callable = None,
+        connection_lost_cb: Callable = None,
+        data_received_cb: Callable = None,
+        eof_received_cb: Callable = None,
+    ) -> None:
+        self.host = host
+        self.port = port
+        self.timeout = timeout
+        self.connection_made_cb = connection_made_cb
+        self.connection_lost_cb = connection_lost_cb
+        self.data_received_cb = data_received_cb
+        self.eof_received_cb = eof_received_cb
 
     @staticmethod
     def connection(func):
@@ -94,7 +136,15 @@ class TCP(ClientBase):
         if self.is_connected():
             raise Exception("Already connected.")
         await self.close()
-        coroutine = open_connection(self.host, self.port)
+        coroutine = open_connection(
+            self.host,
+            self.port,
+            self.timeout,
+            self.connection_made_cb,
+            self.connection_lost_cb,
+            self.data_received_cb,
+            self.eof_received_cb,
+        )
         if isinstance(self.timeout, (int, float)):
             coroutine = wait_for(coroutine, self.timeout)
         self.reader, self.writer = await coroutine
@@ -103,7 +153,7 @@ class TCP(ClientBase):
     async def readline(self) -> bytes:
         """
         Read and return one line, where "line" is a sequence
-        of bytes ending with `\n`.
+        of bytes ending with \\n.
         """
 
         return await self.reader.readline()

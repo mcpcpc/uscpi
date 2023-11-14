@@ -9,6 +9,7 @@ from unittest.mock import Mock
 from unittest.mock import patch
 from time import time
 
+from uscpi.client import open_connection
 from uscpi.client import TCP
 
 
@@ -20,8 +21,17 @@ class TestTCP(IsolatedAsyncioTestCase):
         self.mock_writer.drain = AsyncMock()
         self.mock_writer.write = Mock()
 
+    async def test_open_connection(self):
+        response = await open_connection(
+            "127.0.0.1", 8080, 65536, None, None, None, None
+        )
+        self.assertIsInstance(response, tuple)
+        _, writer = response
+        writer.close()
+        await writer.wait_closed()
+
     async def test_tcp_timeout(self):
-        tcp = TCP("10.0.0.0", 8080, timeout=0.1)
+        tcp = TCP("10.0.0.0", 8080, 0.1)
         with self.assertRaises(TimeoutError):
             start = time()
             await tcp.open()
@@ -32,7 +42,7 @@ class TestTCP(IsolatedAsyncioTestCase):
     async def test_tcp_open(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         await self.tcp.open()
-        mock_open_connection.assert_called_once_with("127.0.0.1", 8080)
+        mock_open_connection.assert_called_once()
         self.assertIsNotNone(self.tcp.reader)
         self.assertIsNotNone(self.tcp.writer)
 
