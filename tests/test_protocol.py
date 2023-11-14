@@ -12,25 +12,25 @@ class TestProtocol(TestCase):
     def setUp(self):
         self.srp = CallbackProtocol(Mock(), loop=Mock())
 
-    def test_callback_protocol_connection_made_callback(self):
-        self.srp.connection_made_callback = Mock()
+    def test_callback_protocol_connection_made_cb(self):
+        self.srp.connection_made_cb = Mock()
         self.srp.connection_made(transport=Mock())
-        self.srp.connection_made_callback.assert_called_once()
+        self.srp.connection_made_cb.assert_called_once()
 
-    def test_callback_protocol_connection_lost_callback(self):
-        self.srp.connection_lost_callback = Mock()
+    def test_callback_protocol_connection_lost_cb(self):
+        self.srp.connection_lost_cb = Mock()
         self.srp.connection_lost(exc=Mock())
-        self.srp.connection_lost_callback.assert_called_once()
+        self.srp.connection_lost_cb.assert_called_once()
 
-    def test_callback_protocol_data_received_callback(self):
-        self.srp.data_received_callback = Mock()
+    def test_callback_protocol_data_received_cb(self):
+        self.srp.data_received_cb = Mock()
         self.srp.data_received(data=Mock())
-        self.srp.data_received_callback.assert_called_once()
+        self.srp.data_received_cb.assert_called_once()
 
-    def test_callback_protocol_eof_received_callback(self):
-        self.srp.eof_received_callback = Mock()
+    def test_callback_protocol_eof_received_cb(self):
+        self.srp.eof_received_cb = Mock()
         self.srp.eof_received()
-        self.srp.eof_received_callback.assert_called_once()
+        self.srp.eof_received_cb.assert_called_once()
 
 
 if __name__ == "__main__":
