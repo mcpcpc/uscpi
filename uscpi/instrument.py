@@ -5,9 +5,9 @@ from uscpi.client import ClientBase
 
 
 class Instrument:
-    """
-    Instrument representation. Implements common commands
-    associated with IEEE-488.2.
+    """Instrument representation.
+
+    Implements common commands associated with IEEE-488.2.
     """
 
     def __init__(self, client: ClientBase) -> None:

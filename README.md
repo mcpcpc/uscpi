@@ -68,13 +68,20 @@ connection time period (in seconds) is exceeded.
 TCP(host="127.0.0.1", port=5025, timeout=0.1)
 ```
 
-### User Callbacks
+### Event Callbacks
 
 There are four user callback functions that can be implemented 
 and executed when a corresponding event is triggered:
 `connection_made_cb`, `connection_lost_cb`, `data_received_cb`, 
-and `eof_received_cb`. Each must be passed to the client method 
-during instantiation. 
+and `eof_received_cb`. Each callable object must be passed to 
+the client method during instantiation. 
+
+```python
+def user_cb():
+    print("Connection made!")
+
+TCP(host="127.0.0.1", port=5025, connection_made_cb=user_cb)
+```
 
 ## Features
 
