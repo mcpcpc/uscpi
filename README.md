@@ -43,8 +43,8 @@ A basic example using the *asyncio* library.
 
 ```python
 from asyncio import run
-from uscpi.client import TCP
-from uscpi.instrument import Instrument
+from uscpi import TCP
+from uscpi import Instrument
 
 client = TCP(host="127.0.0.1", port=5025)
 instrument = Instrument(client=client)
@@ -105,11 +105,12 @@ You can learn more about each of these commands by using the
 built-in `help` method.
 
 ```pycon
->>> from uscpi.instrument import Instrument
+>>> from uscpi import Instrument
 >>> help(Instrument)
 ```
 
 ## Credits
 
 - [sockio](https://github.com/tiagocoutinho/sockio)
+- [IEEE 488.2-1978 Protocol](https://ieeexplore.ieee.org/document/19528)
 - [IEEE 488.2 Common Commands](https://rfmw.em.keysight.com/spdhelpfiles/truevolt/webhelp/US/Content/__I_SCPI/IEEE-488_Common_Commands.htm)
