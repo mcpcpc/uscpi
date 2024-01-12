@@ -25,8 +25,7 @@ class TestTCP(IsolatedAsyncioTestCase):
     def test_del(self, mock_open_connection):
         self.mock_writer.close = Mock()
         self.mock_writer._loop = Mock()
-        self.mock_writer._loop.is_closed = Mock()
-        self.mock_writer._loop.is_closed.return_value = False
+        self.mock_writer._loop.is_closed = Mock(return_value=False)
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         del(self.tcp)
         self.mock_writer.close.assert_called_once()
