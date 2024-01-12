@@ -83,6 +83,12 @@ class TCP(ClientBase):
         self.data_received_cb = data_received_cb
         self.eof_received_cb = eof_received_cb
 
+    def __del__(self) -> None:
+        if isinstance(self.writer, StreamWriter):
+            loop = self.writer._loop
+            if not loop.is_closed():
+                self.writer.close()
+
     @staticmethod
     def connection(func):
         """
