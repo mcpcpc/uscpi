@@ -26,7 +26,7 @@ class TestTCP(IsolatedAsyncioTestCase):
         self.assertEqual(result, self.tcp)
 
     async def test_aexit(self):
-        self.tcp.close = Mock()
+        self.tcp.close = AsyncMock()
         await self.tcp.__aexit__()
         self.tcp.close.assert_awaited_once()
 
