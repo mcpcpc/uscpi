@@ -156,6 +156,19 @@ class TCP(ClientBase):
         self.reader, self.writer = await coroutine
 
     @connection
+    async def read(self, n: int = -1) -> bytes:
+        """
+        Read up to n bytes from the stream.
+        
+        If n is not provided or set to -1, read until EOF,
+        then return all read bytes. If EOF was received and
+        the internal buffer is empty, return an empty bytes
+        object.
+        """
+
+        return await self.reader.read(n)
+
+    @connection
     async def readline(self) -> bytes:
         """
         Read and return one line, where "line" is a sequence

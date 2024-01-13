@@ -64,6 +64,12 @@ class TestTCP(IsolatedAsyncioTestCase):
         self.assertIsNone(self.tcp.writer)
 
     @patch("uscpi.client.open_connection")
+    async def test_tcp_read(self, mock_open_connection):
+        mock_open_connection.return_value = self.mock_reader, self.mock_writer
+        self.mock_reader.read.return_value = b"test\n"
+        self.assertEqual(await self.tcp.read(), b"test\n")
+
+    @patch("uscpi.client.open_connection")
     async def test_tcp_readline(self, mock_open_connection):
         mock_open_connection.return_value = self.mock_reader, self.mock_writer
         self.mock_reader.readline.return_value = b"test\n"
