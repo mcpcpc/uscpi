@@ -83,6 +83,12 @@ class TCP(ClientBase):
         self.data_received_cb = data_received_cb
         self.eof_received_cb = eof_received_cb
 
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *excinfo):
+        await self.close()
+
     @staticmethod
     def connection(func):
         """

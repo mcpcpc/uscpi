@@ -1,6 +1,5 @@
 [project]
 name = "uscpi"
-version = "0.2.0"
 description = "An asynchronous SCPI instrumentation library."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -21,6 +20,9 @@ classifiers = [
     "Operating System :: MacOS :: MacOS X",
     "Programming Language :: Python",
 ]
+dynamic = [
+    "version",
+]
 
 [project.urls]
 homepage = "https://github.com/mcpcpc/uscpi"
@@ -28,6 +30,9 @@ repository = "https://github.com/mcpcpc/uscpi"
 
 [project.optional-dependencies]
 dev = ["coverage", "black"]
+
+[tool.setuptools.dynamic]
+version = {attr = "uscpi.__version__"}
 
 [tool.setuptools]
 packages = ["uscpi"]
