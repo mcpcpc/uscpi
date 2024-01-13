@@ -68,6 +68,19 @@ connection time period (in seconds) is exceeded.
 TCP(host="127.0.0.1", port=5025, timeout=0.1)
 ```
 
+### Automatic Connection Management
+
+To ensure proper connection cleanup, the built-in asynchronous
+context manager can be used. 
+
+```python
+async def main():
+    async with TCP("127.0.0.1", 8080) as client:
+        instrument = Instrument(client=client)
+        response = await instrument.idn()
+        print(response)
+```
+
 ### Event Callbacks
 
 There are four user callback functions that can be implemented 
