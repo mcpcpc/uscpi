@@ -30,14 +30,23 @@ class TestTCP(IsolatedAsyncioTestCase):
         await self.tcp.__aexit__()
         self.tcp.close.assert_awaited_once()
 
-    async def test_open_connection(self):
+    @patch("uscpi.client.get_running_loop")
+    @patch("uscpi.protocol.CallbackProtocol")
+    async def test_open_connection(
+        self,
+        mock_callback_protocol,
+        mock_get_running_loop,
+    ):
+        mock_loop_instance = Mock()
+        mock_transport_instance = Mock()
+        mock_loop_instance.create_connection = AsyncMock(
+            return_value=(mock_transport_instance, None)
+        )
+        mock_get_running_loop.return_value = mock_loop_instance
         response = await open_connection(
-            "127.0.0.1", 8080, 65536, None, None, None, None
+            "0.0.0.0", 8080, 10, None, None, None, None
         )
         self.assertIsInstance(response, tuple)
-        _, writer = response
-        writer.close()
-        await writer.wait_closed()
 
     async def test_tcp_timeout(self):
         tcp = TCP("10.0.0.0", 8080, 0.1)
