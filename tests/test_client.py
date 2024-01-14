@@ -43,9 +43,7 @@ class TestTCP(IsolatedAsyncioTestCase):
             return_value=(mock_transport_instance, None)
         )
         mock_get_running_loop.return_value = mock_loop_instance
-        response = await open_connection(
-            "0.0.0.0", 8080, 10, None, None, None, None
-        )
+        response = await open_connection("0.0.0.0", 8080, 10, None, None, None, None)
         self.assertIsInstance(response, tuple)
 
     async def test_tcp_timeout(self):

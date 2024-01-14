@@ -158,12 +158,10 @@ class TCP(ClientBase):
     @connection
     async def read(self, n: int = -1) -> bytes:
         """
-        Read up to n bytes from the stream.
-        
-        If n is not provided or set to -1, read until EOF,
-        then return all read bytes. If EOF was received and
-        the internal buffer is empty, return an empty bytes
-        object.
+        Read up to n bytes from the stream. If n is not
+        provided or set to -1, read until EOF, then return
+        all read bytes. If EOF was received and the internal
+        buffer is empty, return an empty bytes object.
         """
 
         return await self.reader.read(n)
