@@ -61,8 +61,8 @@ if __name__ == "__main__":
 
 By default, &mu;SCPI will wait indefinitely for a connection to 
 be established. If the `timeout` property is defined, an 
-*asyncio.TimeoutError* will be raised after the specified 
-connection time period (in seconds) is exceeded.
+*TimeoutError* will be raised after the specified connection time
+period (in seconds) is exceeded.
 
 ```python
 TCP(host="127.0.0.1", port=5025, timeout=0.1)
